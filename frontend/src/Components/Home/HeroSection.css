@@ -1,0 +1,158 @@
+.hero-section {
+  font-family: Arial, sans-serif;
+}
+
+/* Hero Banner */
+.hero-banner {
+  background: linear-gradient(to right, #38b2ac, #4299e1);
+  color: white;
+  padding: 5rem 1rem;
+  text-align: center;
+}
+
+.hero-banner h1 {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.hero-banner p {
+  margin-top: 1rem;
+  font-size: 1.25rem;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.feature svg {
+  font-size: 2rem;
+}
+
+.feature p {
+  margin-top: 0.5rem;
+}
+
+/* Buttons */
+.btn {
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  color: #38b2ac;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background: #f0f0f0;
+}
+
+/* How It Works */
+.how-it-works {
+  padding: 5rem 1rem;
+  text-align: center;
+  background: #fff;
+}
+
+.steps {
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+}
+
+.step .icon {
+  padding: 1rem;
+  border-radius: 50%;
+  color: white;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.blue {
+  background-color: #4299e1;
+}
+
+.green {
+  background-color: #48bb78;
+}
+
+.yellow {
+  background-color: #ecc94b;
+}
+
+.step h3 {
+  font-weight: 600;
+}
+
+/* Testimonials */
+.testimonials {
+  background: #f7fafc;
+  padding: 5rem 1rem;
+  text-align: center;
+}
+
+.testimonial-list {
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+}
+
+.card {
+  background: #fcf6f9;
+  border: 2px solid #fff;
+  box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  text-align: left;
+}
+
+.card svg {
+  color: #a0aec0;
+}
+
+.card p {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+}
+
+.author {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+/* Call To Action */
+.cta {
+  background: #4299e1;
+  color: white;
+  padding: 5rem 1rem;
+  text-align: center;
+}
+
+.cta .btn {
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  color: #4299e1;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+.cta .btn:hover {
+  background: #f0f0f0;
+}
