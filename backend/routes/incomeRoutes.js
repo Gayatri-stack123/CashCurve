@@ -6,7 +6,7 @@ const {
     /* downloadIncomeExcel */
 } = require("../controllers/incomeController");
 
-console.log({ addIncome, getAllIncome, /*deleteIncome, downloadIncomeExcel*/ });
+//console.log({ addIncome, getAllIncome, /*deleteIncome, downloadIncomeExcel*/ });
 
 const {protect } = require("../middlewere/authMiddlewere");
 

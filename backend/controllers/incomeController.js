@@ -4,6 +4,7 @@ const Income = require('../models/Income');
 // Add Income Source
 exports.addIncome = async (req, res) => {
     console.log('User making the request:', req.user);
+    console.log('body request:', req.body);
     const userId = req.user._id; // ✅ Use _id if using Mongoose user document
 
     try {

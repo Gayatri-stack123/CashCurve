@@ -62,7 +62,7 @@ function IncomeItem({
         }
     }
 
-    console.log('type', type)
+    //console.log('type', type)
 
     return (
         <IncomeItemStyled indicator={indicatorColor}>
@@ -81,7 +81,7 @@ function IncomeItem({
                         </p>
                     </div>
                     <div className="btn-con">
-                        <Button 
+                        <Button
                             icon={trash}
                             bPad={'1rem'}
                             bRad={'50%'}

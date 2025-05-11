@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react"
+import React, { useContext, useState, useEffect, useCallback } from "react"
 import axios from 'axios'
 
 const BASE_URL = "http://localhost:5000/api/v1/";
@@ -28,25 +28,28 @@ export const GlobalProvider = ({children}) => {
     const [incomes, setIncomes] = useState([])
     const [expenses, setExpenses] = useState([])
     const [error, setError] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
 
-    // Fetch incomes only once when component mounts
-    useEffect(() => {
-        getIncomes();
-    }, []);
+    // Memoize getIncomes to prevent unnecessary re-renders
+    // const getIncomes = useCallback(async () => {
+    //     if (isLoading) return; // Prevent multiple simultaneous calls
 
-    //calculate incomes
-    const addIncome = async (income) => {
-        try {
-            const response = await axiosInstance.post(`income/add`, income);
-            setIncomes(prevIncomes => [...prevIncomes, response.data]);
-            return response.data;
-        } catch (err) {
-            setError(err.response?.data?.message || 'Error adding income');
-            throw err;
-        }
-    }
+    //     setIsLoading(true);
+    //     try {
+    //         const response = await axiosInstance.get(`income/get`);
+    //         setIncomes(response.data || []);
+    //         return response.data;
+    //     } catch (err) {
+    //         setError(err.response?.data?.message || 'Error fetching incomes');
+    //         setIncomes([]);
+    //         throw err;
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    // }, [isLoading]);
 
-    const getIncomes = async () => {
+    const getIncomes = useCallback(async () => {
+        setIsLoading(true);
         try {
             const response = await axiosInstance.get(`income/get`);
             setIncomes(response.data || []);
@@ -55,12 +58,34 @@ export const GlobalProvider = ({children}) => {
             setError(err.response?.data?.message || 'Error fetching incomes');
             setIncomes([]);
             throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    }, []); // ✅ Empty dependency array
+
+
+    // Fetch incomes only once when component mounts
+    useEffect(() => {
+        getIncomes();
+    }, [getIncomes]);
+
+    //calculate incomes
+    const addIncome = async (income) => {
+        try {
+            const response = await axiosInstance.post(`income/add`, income);
+            // Update incomes state directly instead of calling getIncomes again
+            setIncomes(prevIncomes => [...prevIncomes, response.data]);
+            return response.data;
+        } catch (err) {
+            setError(err.response?.data?.message || 'Error adding income');
+            throw err;
         }
     }
 
     const deleteIncome = async (id) => {
         try {
             await axiosInstance.delete(`income/delete/${id}`);
+            // Update incomes state directly instead of calling getIncomes again
             setIncomes(prevIncomes => prevIncomes.filter(income => income._id !== id));
         } catch (err) {
             setError(err.response?.data?.message || 'Error deleting income');
@@ -145,7 +170,8 @@ export const GlobalProvider = ({children}) => {
             totalBalance,
             transactionHistory,
             error,
-            setError
+            setError,
+            isLoading
         }}>
             {children}
         </GlobalContext.Provider>

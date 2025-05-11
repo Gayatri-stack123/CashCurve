@@ -15,6 +15,7 @@ function Form() {
         date: '',
         category: '',
         description: '',
+        type: 'income'
     })
 
     const { title, amount, date, category,description } = inputState;
@@ -27,37 +28,37 @@ function Form() {
     const handleSubmit = e => {
         e.preventDefault()
         addIncome(inputState)
-        setInputState({
-            title: '',
-            amount: '',
-            date: '',
-            category: '',
-            description: '',
-        })
+        // setInputState({
+        //     title: '',
+        //     amount: '',
+        //     date: '',
+        //     category: '',
+        //     description: '',
+        // })
     }
 
     return (
         <FormStyled onSubmit={handleSubmit}>
             {error && <p className='error'>{error}</p>}
             <div className="input-control">
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     value={title}
-                    name={'title'} 
+                    name={'title'}
                     placeholder="Salary Title"
                     onChange={handleInput('title')}
                 />
             </div>
             <div className="input-control">
-                <input value={amount}  
-                    type="text" 
-                    name={'amount'} 
+                <input value={amount}
+                    type="text"
+                    name={'amount'}
                     placeholder={'Salary Amount'}
-                    onChange={handleInput('amount')} 
+                    onChange={handleInput('amount')}
                 />
             </div>
             <div className="input-control">
-                <DatePicker 
+                <DatePicker
                     id='date'
                     placeholderText='Enter A Date'
                     selected={date}
@@ -75,16 +76,16 @@ function Form() {
                     <option value="investments">Investiments</option>
                     <option value="stocks">Stocks</option>
                     <option value="bitcoin">Bitcoin</option>
-                    <option value="bank">Bank Transfer</option>  
-                    <option value="youtube">Youtube</option>  
-                    <option value="other">Other</option>  
+                    <option value="bank">Bank Transfer</option>
+                    <option value="youtube">Youtube</option>
+                    <option value="other">Other</option>
                 </select>
             </div>
             <div className="input-control">
                 <textarea name="description" value={description} placeholder='Add A Reference' id="description" cols="30" rows="4" onChange={handleInput('description')}></textarea>
             </div>
             <div className="submit-btn">
-                <Button 
+                <Button
                     name={'Add Income'}
                     icon={plus}
                     bPad={'.8rem 1.6rem'}
