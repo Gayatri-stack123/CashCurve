@@ -113,7 +113,7 @@ export const GlobalProvider = ({children}) => {
         }
     }
 
-    const getExpenses = async () => {
+    const getExpenses = useCallback(async () => {
         try {
             const response = await axiosInstance.get(`expense/get`);
             setExpenses(response.data || []);
@@ -123,7 +123,8 @@ export const GlobalProvider = ({children}) => {
             setExpenses([]);
             throw err;
         }
-    }
+    }, []);
+
 
     const deleteExpense = async (id) => {
         try {
