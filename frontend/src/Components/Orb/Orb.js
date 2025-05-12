@@ -6,7 +6,7 @@ function Orb() {
 
     const {width, height} = useWindowSize()
 
-    console.log(width, height)
+    //console.log(width, height)
 
     const moveOrb = keyframes`
         0%{

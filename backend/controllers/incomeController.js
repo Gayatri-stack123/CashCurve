@@ -45,6 +45,25 @@ exports.getAllIncome = async (req, res) => {
     }
 };
 
+// Delete Income Source
+exports.deleteIncome = async (req, res) => {
+    const userId = req.user._id;
+    const { id } = req.params;
+
+    try {
+        const income = await Income.findOneAndDelete({ _id: id, user: userId });
+
+        if (!income) {
+            return res.status(404).json({ message: "Income not found" });
+        }
+
+        res.status(200).json({ message: "Income deleted successfully" });
+    } catch (error) {
+        console.error('Error deleting income:', error.message);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
 // const xlsx =require('xlsx');
 // const  Income =require("../models/Income");
 
@@ -81,7 +100,7 @@ exports.getAllIncome = async (req, res) => {
 // //Get All Income  Source
 // exports.getAllIncome = async(req,res)=>{
 //     const userId=req.user.id;
-    
+
 //     try{
 //         const income = await Income.find({userId}).sort({date:-1});
 //         res.json(income);
@@ -120,5 +139,5 @@ exports.getAllIncome = async (req, res) => {
 //         res.download('income_details.xlsx');
 //     }catch(error){
 //         res.status(500).json({message:"Server Error"});
-//     } 
+//     }
 // };*/

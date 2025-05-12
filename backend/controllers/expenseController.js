@@ -1,124 +1,153 @@
-const ExpenseSchema = require("../models/ExpenseModel")
+//  const ExpenseSchema = require("../models/ExpenseModel")
 
 
-exports.addExpense = async (req, res) => {
-    const {title, amount, category, description, date}  = req.body
+// exports.addExpense = async (req, res) => {
+//     const {title, amount, category, description, date}  = req.body
 
-    const income = ExpenseSchema({
-        title,
-        amount,
-        category,
-        description,
-        date
-    })
+//     const income = ExpenseSchema({
+//         title,
+//         amount,
+//         category,
+//         description,
+//         date
+//     })
 
-    try {
-        //validations
-        if(!title || !category || !description || !date){
-            return res.status(400).json({message: 'All fields are required!'})
-        }
-        if(amount <= 0 || !amount === 'number'){
-            return res.status(400).json({message: 'Amount must be a positive number!'})
-        }
-        await income.save()
-        res.status(200).json({message: 'Expense Added'})
-    } catch (error) {
-        res.status(500).json({message: 'Server Error'})
-    }
+//     try {
+//         //validations
+//         if(!title || !category || !description || !date){
+//             return res.status(400).json({message: 'All fields are required!'})
+//         }
+//         if(amount <= 0 || !amount === 'number'){
+//             return res.status(400).json({message: 'Amount must be a positive number!'})
+//         }
+//         await income.save()
+//         res.status(200).json({message: 'Expense Added'})
+//     } catch (error) {
+//         res.status(500).json({message: 'Server Error'})
+//     }
 
-    console.log(income)
-}
+//     console.log(income)
+// }
 
-exports.getExpense = async (req, res) =>{
-    try {
-        const incomes = await ExpenseSchema.find().sort({createdAt: -1})
-        res.status(200).json(incomes)
-    } catch (error) {
-        res.status(500).json({message: 'Server Error'})
-    }
-}
+// exports.getExpense = async (req, res) =>{
+//     try {
+//         const incomes = await ExpenseSchema.find().sort({createdAt: -1})
+//         res.status(200).json(incomes)
+//     } catch (error) {
+//         res.status(500).json({message: 'Server Error'})
+//     }
+// }
 
-exports.deleteExpense = async (req, res) =>{
-    const {id} = req.params;
-    ExpenseSchema.findByIdAndDelete(id)
-        .then((income) =>{
-            res.status(200).json({message: 'Expense Deleted'})
-        })
-        .catch((err) =>{
-            res.status(500).json({message: 'Server Error'})
-        })
-}
-/* const xlsx =require('xlsx');
-const  Expense =require("../models/Expense");
+// exports.deleteExpense = async (req, res) =>{
+//     const {id} = req.params;
+//     ExpenseSchema.findByIdAndDelete(id)
+//         .then((income) =>{
+//             res.status(200).json({message: 'Expense Deleted'})
+//         })
+//         .catch((err) =>{
+//             res.status(500).json({message: 'Server Error'})
+//         })
+// }
+
+const xlsx = require('xlsx');
+const Expense = require("../models/Expense");
 
 //Add Expense Source
-exports.addExpense=async(req , res)=>{
-    const userId = req.user.id;
+exports.addExpense = async (req, res) => {
+    const userId = req.user._id;
 
-    try{
-        const { icon , category , amount , date }=req.body;
+    try {
+        const { title, amount, type, date, category, description } = req.body;
 
-        //Validation: check for missing fields
-        if(!category || !amount || !date){
-            return res.status(400).json({message:"All fields are required "});
+        // Validation: check for missing fields
+        if (!title || !amount || !date || !type || !category || !description) {
+            return res.status(400).json({ message: "All fields are required" });
         }
 
         const newExpense = new Expense({
-            userId,
-            icon,
-            category,
+            user: userId,
+            title,
             amount,
-            date:new Date(date),
+            type,
+            category,
+            description,
+            date: new Date(date),
         });
+
         await newExpense.save();
-        res.status(200).json(newExpense);
-    }catch(error) {
-        res.status(500).json({message:"Server Error"});
+        res.status(201).json(newExpense);
+    } catch (error) {
+        console.error('Error adding expense:', error.message);
+        res.status(500).json({ message: "Server Error" });
     }
 };
 
 //Get All Expense  Source
-exports.getAllExpense = async(req,res)=>{
-    const userId=req.user.id;
-    
-    try{
-        const expense = await Expense.find({userId}).sort({date:-1});
-        res.json(expense);
-    }catch(error){
-        res.status(500).json({message:"Server Error"});
+exports.getAllExpense = async (req, res) => {
+    const userId = req.user._id;
+
+    try {
+        const expenses = await Expense.find({ user: userId }).sort({ date: -1 });
+        res.status(200).json(expenses);
+    } catch (error) {
+        console.error('Error fetching expenses:', error.message);
+        res.status(500).json({ message: "Server Error" });
     }
 };
 
 //Delete Expense Source
-exports.deleteExpense=async(req,res)=>{
-    try{
-        await Expense.findByIdAndDelete(req.params.id);
-        res.json({message:"Expense delete successfully"});
-    }catch(error){
-        res.status(500).json({message:"Server Error"});
+exports.deleteExpense = async (req, res) => {
+    const userId = req.user._id;
+    const { id } = req.params;
+
+    try {
+        const expense = await Expense.findOneAndDelete({ _id: id, user: userId });
+
+        if (!expense) {
+            return res.status(404).json({ message: "Expense not found" });
+        }
+
+        res.status(200).json({ message: "Expense deleted successfully" });
+    } catch (error) {
+        console.error('Error deleting expense:', error.message);
+        res.status(500).json({ message: "Server Error" });
     }
 };
 
 //Download Excel
-exports.downloadExpenseExcel=async(req,res)=>{
-    const userId=req.user.id;
-    try{
-        const expense = await Expense.find({userId}).sort({date:-1});
+exports.downloadExpensesExcel = async (req, res) => {
+    const userId = req.user._id;
 
-        //prepare data for Excel
-        const data = expense.map((item)=>({
-            Source: item.source,
-            Amount:item.amount,
-            Date: item.date,
+    try {
+        const expenses = await Expense.find({ user: userId }).sort({ date: -1 });
+
+        // Prepare data for Excel
+        const data = expenses.map((expense) => ({
+            Title: expense.title,
+            Amount: expense.amount,
+            Category: expense.category,
+            Description: expense.description,
+            Date: expense.date.toLocaleDateString(),
         }));
 
+        // Create workbook and worksheet
         const wb = xlsx.utils.book_new();
         const ws = xlsx.utils.json_to_sheet(data);
-        xlsx.utils.book_append_sheet(wb,ws,"expense");
-        xlsx.writeFile(wb,'expense_details.xlsx');
-        res.download('expense_details.xlsx');
-    }catch(error){
-        res.status(500).json({message:"Server Error"});
+
+        // Add worksheet to workbook
+        xlsx.utils.book_append_sheet(wb, ws, "Expenses");
+
+        // Generate buffer
+        const excelBuffer = xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
+
+        // Set headers for file download
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=expenses.xlsx');
+
+        // Send the file
+        res.send(excelBuffer);
+    } catch (error) {
+        console.error('Error downloading expenses:', error.message);
+        res.status(500).json({ message: "Server Error" });
     }
 };
- */
